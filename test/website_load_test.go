@@ -2,7 +2,7 @@ package tests
 
 import (
 	"testing"
-	"url_pinger/pkg/models"
+	"url_pinger/pkg/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +12,7 @@ func TestWebsiteConfigFactoryValidInput(t *testing.T) {
 	pattern := "example"
 	interval := 5
 
-	wc, err := models.WebsiteConfigFactory(url, pattern, interval)
+	wc, err := config.WebsiteConfigFactory(url, pattern, interval)
 
 	assert.Nil(t, err)
 	assert.Equal(t, url, wc.URL)
@@ -26,7 +26,7 @@ func TestWebsiteConfigFactoryInvalidURL(t *testing.T) {
 	pattern := "example"
 	interval := 5
 
-	wc, err := models.WebsiteConfigFactory(url, pattern, interval)
+	wc, err := config.WebsiteConfigFactory(url, pattern, interval)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, wc)
@@ -40,7 +40,7 @@ func TestWebsiteConfigFactoryInvalidInterval(t *testing.T) {
 	pattern := "example"
 	interval := 0
 
-	wc, err := models.WebsiteConfigFactory(url, pattern, interval)
+	wc, err := config.WebsiteConfigFactory(url, pattern, interval)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, wc)

@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"testing"
 	"url_pinger/pkg/config"
-	"url_pinger/pkg/models"
 	"github.com/stretchr/testify/require"
 )
 
@@ -48,7 +47,7 @@ func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	}
 
 	// Assert that the loaded website config has the correct values
-	expectedConfig := &models.WebsiteConfig{
+	expectedConfig := &config.WebsiteConfig{
 		URL:      "https://www.example.com",
 		Pattern:  "example",
 		Interval: 60,

@@ -2,16 +2,49 @@ package config
 
 import (
 	"encoding/csv"
+	"errors"
 	"io"
+	"net/url"
 	"os"
 	"strconv"
-	"url_pinger/pkg/models"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	DBConn string
+}
+
+type WebsiteConfig struct {
+	URL string
+	Pattern string 
+	Interval int
+}
+
+func (wc WebsiteConfig) Validate() error {
+	if _, err := url.ParseRequestURI(wc.URL); err != nil {
+		return errors.New("invalid URL")
+	}
+
+	if wc.Interval <= 0 {
+		return errors.New("interval must be positive")
+	}
+
+	return nil
+}
+
+func WebsiteConfigFactory(url string, pattern string, interval int) (*WebsiteConfig, error) {
+	wc := &WebsiteConfig{
+		URL: url,
+		Pattern: pattern,
+		Interval: interval,
+	}
+
+	if err := wc.Validate(); err != nil {
+		return nil, err
+	}
+
+	return wc, nil
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -26,7 +59,7 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 
-func LoadWebsiteSettings(filePath string) ([]*models.WebsiteConfig, error) {
+func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -34,7 +67,7 @@ func LoadWebsiteSettings(filePath string) ([]*models.WebsiteConfig, error) {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	var configs []*models.WebsiteConfig
+	var configs []*WebsiteConfig
 
 	for {
 		record, err := reader.Read()
@@ -50,7 +83,7 @@ func LoadWebsiteSettings(filePath string) ([]*models.WebsiteConfig, error) {
 			return nil, err
 		}
 
-		wcObj, err := models.WebsiteConfigFactory(record[0],record[1],interval)
+		wcObj, err := WebsiteConfigFactory(record[0],record[1],interval)
 		if err != nil {
 			return nil, err
 		}

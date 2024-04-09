@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	_ "fmt"
 	"log"
-
 	_ "github.com/lib/pq"
 )
 
@@ -21,3 +20,14 @@ func InitDB(dbConn string) *sql.DB {
 
 	return db
 }
+
+type WebsiteLog struct {
+	SessionId string
+	ThreadId int
+	URL string 
+	Response string
+	Error string
+	Pattern string  
+}
+
+
