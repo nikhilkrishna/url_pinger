@@ -1,24 +1,27 @@
 package monitor
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"regexp"
 	"time"
 	"url_pinger/pkg/config"
 	"url_pinger/pkg/database"
-    "url_pinger/pkg/logger"
+	"url_pinger/pkg/logger"
 )
 
 type WebsiteMonitor struct {
 	Configs   []*config.WebsiteConfig
 	SessionID string
+	Logger    logger.Logger
 }
 
-func NewWebsiteMonitor(configs []*config.WebsiteConfig, sessionID string) *WebsiteMonitor {
+func NewWebsiteMonitor(configs []*config.WebsiteConfig, sessionID string, logger logger.Logger) *WebsiteMonitor {
 	return &WebsiteMonitor{
 		Configs:   configs,
 		SessionID: sessionID,
+		Logger:    logger,
 	}
 }
 
@@ -30,17 +33,14 @@ func (wm *WebsiteMonitor) Start() {
 
 func (wm *WebsiteMonitor) checkWebsite(cfg *config.WebsiteConfig, threadId int) {
 	ticker := time.NewTicker(time.Duration(cfg.Interval) * time.Second)
-	for {
-		select {
-		case <-ticker.C:
-			log := CheckWebsite(cfg, wm.SessionID, threadId)
-			// Implement a logging mechanism here instead of fmt.Println
-			// Other cases like stop signal can be added
-		}
+	defer ticker.Stop()
+	for range ticker.C {
+		log := PingWebsite(cfg, wm.SessionID, threadId)
+		wm.Logger.Log(fmt.Sprintf("Session %s, Thread %d: %s", wm.SessionID, threadId, log))
 	}
 }
 
-func CheckWebsite(cfg *config.WebsiteConfig, sessionId string, threadId int) database.WebsiteLog {
+func PingWebsite(cfg *config.WebsiteConfig, sessionId string, threadId int) database.WebsiteLog {
 	log := database.WebsiteLog{
 		SessionId: sessionId,
 		ThreadId:  threadId,

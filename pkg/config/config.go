@@ -68,6 +68,7 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 	reader := csv.NewReader(file)
 	var configs []*WebsiteConfig
 
+	reader.Read()
 	for {
 		record, err := reader.Read()
 		if err != nil {

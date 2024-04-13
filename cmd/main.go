@@ -3,16 +3,24 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"url_pinger/pkg/config"
 	"url_pinger/pkg/database"
+	"url_pinger/pkg/logger"
+	"url_pinger/pkg/monitor"
 )
 
 func main() {
+
+	// Initialize Logger
+	log := logger.NewStdoutLogger()
+	defer log.Close()
+
 	cfg, err := config.LoadConfig(".env")
 	if err != nil {
-		log.Fatal("Error loading the .env file")
+		log.Log("Error loading the .env file")
 	}
 
 	db := database.InitDB(cfg.DBConn)
@@ -27,5 +35,14 @@ func main() {
 		fmt.Println("Error loading website configurations:", err)
 		os.Exit(1)
 	}
+
+	wm := monitor.NewWebsiteMonitor(configs, *sessionID, log)
+	wm.Start()
+
+	// Wait for shutdown signal
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
+	<-stopChan
+	log.Log("Shutting down website monitoring...")
 
 }
