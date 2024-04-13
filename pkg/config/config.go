@@ -16,8 +16,8 @@ type Config struct {
 }
 
 type WebsiteConfig struct {
-	URL string
-	Pattern string 
+	URL      string
+	Pattern  string
 	Interval int
 }
 
@@ -35,8 +35,8 @@ func (wc WebsiteConfig) Validate() error {
 
 func WebsiteConfigFactory(url string, pattern string, interval int) (*WebsiteConfig, error) {
 	wc := &WebsiteConfig{
-		URL: url,
-		Pattern: pattern,
+		URL:      url,
+		Pattern:  pattern,
 		Interval: interval,
 	}
 
@@ -58,7 +58,6 @@ func LoadConfig(path string) (*Config, error) {
 	}, nil
 }
 
-
 func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -73,7 +72,7 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 		record, err := reader.Read()
 		if err != nil {
 			if err == io.EOF {
-				break 
+				break
 			}
 			return nil, err
 		}
@@ -83,7 +82,7 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 			return nil, err
 		}
 
-		wcObj, err := WebsiteConfigFactory(record[0],record[1],interval)
+		wcObj, err := WebsiteConfigFactory(record[0], record[1], interval)
 		if err != nil {
 			return nil, err
 		}

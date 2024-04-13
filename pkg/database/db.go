@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	_ "fmt"
-	"log"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func InitDB(dbConn string) *sql.DB {
@@ -23,11 +23,9 @@ func InitDB(dbConn string) *sql.DB {
 
 type WebsiteLog struct {
 	SessionId string
-	ThreadId int
-	URL string 
-	Response string
-	Error string
-	Pattern string  
+	ThreadId  int
+	URL       string
+	Response  string
+	Error     string
+	Pattern   string
 }
-
-

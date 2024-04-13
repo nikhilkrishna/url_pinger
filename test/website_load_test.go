@@ -1,9 +1,9 @@
 package tests
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"url_pinger/pkg/config"
-	"github.com/stretchr/testify/assert"
 )
 
 // Creates a new WebsiteConfig object with the provided URL, pattern, and interval
@@ -20,7 +20,7 @@ func TestWebsiteConfigFactoryValidInput(t *testing.T) {
 	assert.Equal(t, interval, wc.Interval)
 }
 
-	// Returns an error if the provided URL is invalid
+// Returns an error if the provided URL is invalid
 func TestWebsiteConfigFactoryInvalidURL(t *testing.T) {
 	url := "invalid-url"
 	pattern := "example"
@@ -31,8 +31,6 @@ func TestWebsiteConfigFactoryInvalidURL(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, wc)
 }
-
-
 
 // Returns an error if the provided interval is less than or equal to zero
 func TestWebsiteConfigFactoryInvalidInterval(t *testing.T) {
@@ -45,4 +43,3 @@ func TestWebsiteConfigFactoryInvalidInterval(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, wc)
 }
-

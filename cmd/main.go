@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"log"
 	"fmt"
+	"log"
 	"os"
 	"url_pinger/pkg/config"
 	"url_pinger/pkg/database"
@@ -19,15 +19,13 @@ func main() {
 	defer db.Close()
 
 	csvFilePath := flag.String("csv", "websites.csv", "Path to the CSV file with website configs")
-    sessionID := flag.String("session", "default-session", "Session ID for logging")
-    flag.Parse()
+	sessionID := flag.String("session", "default-session", "Session ID for logging")
+	flag.Parse()
 
 	configs, err := config.LoadWebsiteSettings(*csvFilePath)
-    if err != nil {
-        fmt.Println("Error loading website configurations:", err)
+	if err != nil {
+		fmt.Println("Error loading website configurations:", err)
 		os.Exit(1)
-    }
+	}
 
 }
-
- 
