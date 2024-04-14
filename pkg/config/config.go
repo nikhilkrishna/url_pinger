@@ -33,7 +33,7 @@ func (wc WebsiteConfig) Validate() error {
 	return nil
 }
 
-func WebsiteConfigFactory(url string, pattern string, interval int) (*WebsiteConfig, error) {
+func NewWebsiteConfig(url string, pattern string, interval int) (*WebsiteConfig, error) {
 	wc := &WebsiteConfig{
 		URL:      url,
 		Pattern:  pattern,
@@ -83,7 +83,7 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 			return nil, err
 		}
 
-		wcObj, err := WebsiteConfigFactory(record[0], record[1], interval)
+		wcObj, err := NewWebsiteConfig(record[0], record[1], interval)
 		if err != nil {
 			return nil, err
 		}

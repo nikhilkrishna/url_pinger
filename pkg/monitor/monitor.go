@@ -43,7 +43,7 @@ func (wm *WebsiteMonitor) checkWebsite(cfg *config.WebsiteConfig, threadId int) 
 
 		// Save the log to the database
 		if err := database.SaveLog(wm.Db, log); err != nil {
-			wm.Logger.Log(fmt.Sprintf("Error saving log to database: %s", err.Error()))
+			wm.Logger.Log(fmt.Sprintf(`Error saving log to database: %s`, err.Error()))
 		}
 	}
 }
