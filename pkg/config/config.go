@@ -68,7 +68,12 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 	reader := csv.NewReader(file)
 	var configs []*WebsiteConfig
 
-	reader.Read()
+	//Skip the csv header line
+	_,err = reader.Read()
+	if err != nil {
+		return nil, err
+	}
+
 	for {
 		record, err := reader.Read()
 		if err != nil {

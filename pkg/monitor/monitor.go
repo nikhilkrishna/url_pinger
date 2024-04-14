@@ -71,7 +71,7 @@ func PingWebsite(cfg *config.WebsiteConfig, sessionId string, threadId int) data
 
 	responseText := string(body)
 	if len(responseText) > 500 {
-		responseText = responseText[:500] + "..." 
+		responseText = responseText[:500] + "..."
 	}
 
 	if cfg.Pattern != "" {

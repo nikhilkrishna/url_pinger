@@ -27,11 +27,17 @@ func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// Write valid data to the CSV file
-	header := []string{"url","check_pattern","ping_interval"}
+	header := []string{"url", "check_pattern", "ping_interval"}
 	data := []string{"https://www.example.com", "example", "60"}
 	writer := csv.NewWriter(file)
-	writer.Write(header)
-	writer.Write(data)
+	err = writer.Write(header)
+	if err != nil {
+		t.Errorf("Unable to write to file: %v", err)
+	}
+	err = writer.Write(data)
+	if err != nil {
+		t.Errorf("Unable to write to file: %v", err)
+	}
 	writer.Flush()
 
 	// Load website settings from the CSV file

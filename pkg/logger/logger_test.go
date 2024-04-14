@@ -2,10 +2,10 @@ package logger
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"sync"
 	"testing"
-
 )
 
 func captureOutput(f func()) string {
@@ -18,7 +18,10 @@ func captureOutput(f func()) string {
 
 	w.Close()
 	os.Stdout = old
-	buf.ReadFrom(r)
+	_, err := buf.ReadFrom(r)
+	if err != nil {
+		fmt.Printf("Failed to read from reader: %v", err)
+	}
 	return buf.String()
 }
 
