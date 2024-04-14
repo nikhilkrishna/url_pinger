@@ -1,11 +1,11 @@
-package tests
+package logger
 
 import (
 	"bytes"
 	"os"
 	"sync"
 	"testing"
-	"url_pinger/pkg/logger"
+
 )
 
 func captureOutput(f func()) string {
@@ -24,7 +24,7 @@ func captureOutput(f func()) string {
 
 func TestStdoutLogger(t *testing.T) {
 	var wg sync.WaitGroup
-	logger := logger.NewStdoutLogger()
+	logger := NewStdoutLogger()
 
 	output := captureOutput(func() {
 		wg.Add(1)

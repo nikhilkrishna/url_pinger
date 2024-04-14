@@ -1,4 +1,4 @@
-package tests
+package monitor
 
 import (
 	"github.com/stretchr/testify/assert"

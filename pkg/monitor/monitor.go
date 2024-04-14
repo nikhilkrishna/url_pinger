@@ -1,6 +1,7 @@
 package monitor
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,13 +16,15 @@ type WebsiteMonitor struct {
 	Configs   []*config.WebsiteConfig
 	SessionID string
 	Logger    logger.Logger
+	Db        *sql.DB
 }
 
-func NewWebsiteMonitor(configs []*config.WebsiteConfig, sessionID string, logger logger.Logger) *WebsiteMonitor {
+func NewWebsiteMonitor(configs []*config.WebsiteConfig, sessionID string, logger logger.Logger, db *sql.DB) *WebsiteMonitor {
 	return &WebsiteMonitor{
 		Configs:   configs,
 		SessionID: sessionID,
 		Logger:    logger,
+		Db:        db,
 	}
 }
 
@@ -36,7 +39,12 @@ func (wm *WebsiteMonitor) checkWebsite(cfg *config.WebsiteConfig, threadId int) 
 	defer ticker.Stop()
 	for range ticker.C {
 		log := PingWebsite(cfg, wm.SessionID, threadId)
-		wm.Logger.Log(fmt.Sprintf("Session %s, Thread %d: %s", wm.SessionID, threadId, log))
+		wm.Logger.Log(fmt.Sprintf("Session %s, Thread %d: %v", wm.SessionID, threadId, log))
+
+		// Save the log to the database
+		if err := database.SaveLog(wm.Db, log); err != nil {
+			wm.Logger.Log(fmt.Sprintf("Error saving log to database: %s", err.Error()))
+		}
 	}
 }
 
@@ -61,15 +69,20 @@ func PingWebsite(cfg *config.WebsiteConfig, sessionId string, threadId int) data
 		return log
 	}
 
+	responseText := string(body)
+	if len(responseText) > 500 {
+		responseText = responseText[:500] + "..." 
+	}
+
 	if cfg.Pattern != "" {
 		matched, _ := regexp.MatchString(cfg.Pattern, string(body))
 		if matched {
-			log.Response = "Pattern matched"
+			log.Response = fmt.Sprintf("Pattern matched, %s ", responseText)
 		} else {
-			log.Response = "Pattern not matched"
+			log.Response = fmt.Sprintf("Pattern not matched, %s ", responseText)
 		}
 	} else {
-		log.Response = "No pattern provided"
+		log.Response = fmt.Sprintf("No pattern provided, %s ", responseText)
 	}
 
 	return log

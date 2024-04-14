@@ -36,7 +36,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	wm := monitor.NewWebsiteMonitor(configs, *sessionID, log)
+	wm := monitor.NewWebsiteMonitor(configs, *sessionID, log, db)
 	wm.Start()
 
 	// Wait for shutdown signal

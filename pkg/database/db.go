@@ -2,9 +2,11 @@ package database
 
 import (
 	"database/sql"
-	_ "fmt"
-	_ "github.com/lib/pq"
+	"fmt"
 	"log"
+	"time"
+
+	_ "github.com/lib/pq"
 )
 
 func InitDB(dbConn string) *sql.DB {
@@ -28,4 +30,14 @@ type WebsiteLog struct {
 	Response  string
 	Error     string
 	Pattern   string
+}
+
+func SaveLog(db *sql.DB, logEntry WebsiteLog) error {
+	query := `INSERT INTO public.website_monitor_log (url, error,  thread_id, session_id, "timestamp")
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	_, err := db.Exec(query, logEntry.URL, logEntry.Error, logEntry.ThreadId, logEntry.SessionId, time.Now())
+	if err != nil {
+		return fmt.Errorf("error inserting log entry: %v", err)
+	}
+	return nil
 }

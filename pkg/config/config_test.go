@@ -1,4 +1,4 @@
-package tests
+package config
 
 import (
 	"encoding/csv"
@@ -7,12 +7,11 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
-	"url_pinger/pkg/config"
 )
 
 func TestLoadConfig(t *testing.T) {
 	path := filepath.Join("test.env")
-	cfg, err := config.LoadConfig(path)
+	cfg, err := LoadConfig(path)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, cfg.DBConn)
@@ -28,13 +27,15 @@ func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// Write valid data to the CSV file
+	header := []string{"url","check_pattern","ping_interval"}
 	data := []string{"https://www.example.com", "example", "60"}
 	writer := csv.NewWriter(file)
+	writer.Write(header)
 	writer.Write(data)
 	writer.Flush()
 
 	// Load website settings from the CSV file
-	configs, err := config.LoadWebsiteSettings(file.Name())
+	configs, err := LoadWebsiteSettings(file.Name())
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -45,7 +46,7 @@ func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	}
 
 	// Assert that the loaded website config has the correct values
-	expectedConfig := &config.WebsiteConfig{
+	expectedConfig := &WebsiteConfig{
 		URL:      "https://www.example.com",
 		Pattern:  "example",
 		Interval: 60,
@@ -58,7 +59,7 @@ func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 // Returns an error for an invalid CSV file path
 func TestLoadWebsiteSettings_InvalidCSVFilePath(t *testing.T) {
 	// Load website settings from an invalid CSV file path
-	_, err := config.LoadWebsiteSettings("invalid.csv")
+	_, err := LoadWebsiteSettings("invalid.csv")
 
 	// Assert that an error is returned
 	if err == nil {
