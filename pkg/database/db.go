@@ -6,11 +6,11 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func InitDB(dbConn string) *sql.DB {
-	db, err := sql.Open("postgres", dbConn)
+	db, err := sql.Open("pgx", dbConn)
 	if err != nil {
 		log.Fatalf("Error opening database connection: %v", err)
 	}
