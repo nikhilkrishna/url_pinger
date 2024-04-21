@@ -5,6 +5,12 @@ import (
 	"sync"
 )
 
+type Logger interface {
+	Log(message string)
+	Close()
+}
+
+
 type StdoutLogger struct {
 	logChan chan string
 	wg      *sync.WaitGroup
