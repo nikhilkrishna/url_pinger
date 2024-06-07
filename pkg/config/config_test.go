@@ -2,21 +2,31 @@ package config
 
 import (
 	"encoding/csv"
-	"github.com/stretchr/testify/require"
 	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
-func TestLoadConfig(t *testing.T) {
-	path := filepath.Join("test.env")
-	cfg, err := LoadConfig(path)
+func TestLoadConfigSettings(t *testing.T) {
+	file, err := os.CreateTemp("", "test.env")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(file.Name())
 
+	settings := []byte("DB_CONN=test")
+	err = os.WriteFile(file.Name(), settings, 0644)
+	if err != nil {
+		t.Errorf("Unable to write to file: %v", err)
+	}
+
+	cfg, err := LoadConfig(file.Name())
 	require.NoError(t, err)
 	require.NotEmpty(t, cfg.DBConn)
-
 }
+
 
 func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	// Create a temporary CSV file with valid data
