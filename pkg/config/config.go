@@ -69,7 +69,7 @@ func LoadWebsiteSettings(filePath string) ([]*WebsiteConfig, error) {
 	var configs []*WebsiteConfig
 
 	//Skip the csv header line
-	_,err = reader.Read()
+	_, err = reader.Read()
 	if err != nil {
 		return nil, err
 	}

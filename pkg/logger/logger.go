@@ -10,7 +10,6 @@ type Logger interface {
 	Close()
 }
 
-
 type StdoutLogger struct {
 	logChan chan string
 	wg      *sync.WaitGroup

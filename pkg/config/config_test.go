@@ -27,7 +27,6 @@ func TestLoadConfigSettings(t *testing.T) {
 	require.NotEmpty(t, cfg.DBConn)
 }
 
-
 func TestLoadWebsiteSettings_ValidCSVFile(t *testing.T) {
 	// Create a temporary CSV file with valid data
 	file, err := os.CreateTemp("", "test.csv")
